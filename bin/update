@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+from subprocess import *
+
+def call_with_stdout(call_sequence):
+	proc = Popen(call_sequence, stdout=PIPE)
+	lines = []
+	for line in proc.stdout:
+		yield line
+
+# NB(xenosoz): You may need
+#   `rm -rf distfiles/gyp-read-only/`
+#   `svn checkout http://gyp.googlecode.com/svn/trunk/ distfiles/gyp-read-only`
+#   But that case is not considered yet.
+
+commit_message = '__'.join(call_with_stdout(['svn', 'up', 'distfiles/gyp-read-only/']))
+call(['git', 'add', '.'])
+call(['git', 'commit', '-a', '-m', commit_message])
